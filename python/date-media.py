@@ -28,6 +28,15 @@ def process_photos(photos: list) -> dict:
         new_names[photo] = Path(directory).joinpath(date_to_use + photo.suffix)
     return new_names
 
+def process_videos(videos: list) -> dict:
+    new_names = {}
+    for video in videos:
+        create_date = et.get_tag("CreateDate", str(video))
+        create_date = format_date(create_date).strftime("%Y-%m-%d_%H-%M-%S")
+        new_names[video] = Path(directory).joinpath(create_date + video.suffix)
+    return new_names
+
+
 if len(sys.argv) < 2:
     print("No directory argument provided!", file=sys.stderr)
     sys.exit(1)
@@ -55,7 +64,7 @@ else:
             if len(photo_files) > 0:
                 file_names.update(process_photos(photo_files))
             if len(video_files) > 0:
-                pass
+                file_names.update(process_videos(video_files))
         
         print("The files will be renamed as follows:")
         for old_name, new_name in file_names.items():
